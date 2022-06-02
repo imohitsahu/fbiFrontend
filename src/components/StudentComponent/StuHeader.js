@@ -2,21 +2,45 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import LoginService from "../../services/LoginService";
 import { useCookies } from 'react-cookie';
+import StudentService from "../../services/StudentService";
 
 function StuHeader() {
 
     const navigate = useNavigate()
-    const [cookie, setCookie, removeCookie] = useCookies()
+    // const [cookie, setCookie, removeCookie] = useCookies()
     const [email, setEmail] = useState()
     const [slice, setSlice] = useState()
+    const history = useNavigate();
 
     useEffect(() => {
-        LoginService.getStudent()
-            .then((getData) => {
-                setEmail(getData.data.email)
-                setSlice(getData.data.stuName.charAt(0).toUpperCase())
-            })
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+        try {
+            // LoginService.getStudent()
+            StudentService.get(parseJwt(localStorage.getItem('Student'), { decrypt: true }).iss)
+                .then((getData) => {
+                    setEmail(getData.data.email)
+                    setSlice(getData.data.stuName.charAt(0).toUpperCase())
+                })
+                .catch((error) => {
+                    history("/")
+                })
+        }
+        catch {
+            history("/")
+        }
     })
+
+        // LoginService.getStudent()
+        //     .then((getData) => {
+        //         setEmail(getData.data.email)
+        //         setSlice(getData.data.stuName.charAt(0).toUpperCase())
+        //     })
+    
     const logout = () => {
         const logoutDTO = {
             "email": email,
