@@ -69,11 +69,11 @@ export default function InsChangePassword() {
         e.preventDefault()
         if (newPassword === confirmPassword) {
             if (oldPassword === confirmPassword) {
-                alert("Please enter different password.")
                 setFailureMsg("Please enter different password.")
+                setFailure(true)
             } else {
                 setLoading(true)
-                const d = await InstituteService.changePassword(email, oldPassword, confirmPassword)
+                InstituteService.changePassword(email, oldPassword, confirmPassword)
                     .then((response) => {
                         setSuccess(true);
                         setFailure(false)
@@ -99,7 +99,6 @@ export default function InsChangePassword() {
                 <CircularProgress color="inherit" />
             </Backdrop>}
             {!loading &&
-
                 isProfile && <>
                     <div className="row d-flex justify-content-center m-0 align-items-center h-100">
                         <div className="col-md-9 col-lg-4">

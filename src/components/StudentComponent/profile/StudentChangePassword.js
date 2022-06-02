@@ -65,7 +65,7 @@ function StudentChangePassword() {
         if (newPassword === confirmPassword) {
             if (oldPassword === confirmPassword) {
                 setFailureMsg("Please enter different password.")
-                setFailureMsg(true)
+                setFailure(true)
             } else {
                 setLoading(true)
                 StudentService.changePassword(email, oldPassword, confirmPassword)
