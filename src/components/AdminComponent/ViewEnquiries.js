@@ -6,14 +6,24 @@ import AdminNav from "./AdminNav";
 import AdminHeader from "./AdminHeader";
 import EnquiryService from "../../services/EnquiryService";
 import LoginService from "../../services/LoginService";
+import AdminService from "../../services/AdminService";
 
 export default function AllEnquiries() {
     const [apiData, setApiData] = useState([]);
     const history = useNavigate()
 
     useEffect(() => {
-        LoginService.getAdmin()
-            .then((getcred) => {
+
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        try {
+            AdminService.get(parseJwt(localStorage.getItem('Admin'), { decrypt: true }).iss)
+                .then((getcred) => {
                 EnquiryService.getAll()
                     .then((getData) => {
                         setApiData(getData.data);
@@ -23,6 +33,10 @@ export default function AllEnquiries() {
                 console.log(error)
                 history("/")
             })
+        }
+        catch {
+            history("/")
+        }
 
     }, [])
 

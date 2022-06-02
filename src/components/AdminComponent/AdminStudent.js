@@ -6,14 +6,23 @@ import AdminHeader from "./AdminHeader";
 import StudentService from '../../services/StudentService'
 import LoginService from "../../services/LoginService";
 import { useNavigate } from 'react-router-dom';
+import AdminService from "../../services/AdminService";
 
 export default function AllStudent() {
     const history = useNavigate()
     const [apiData, setApiData] = useState([]);
 
     useEffect(() => {
-        LoginService.getAdmin()
-            .then((getcred) => {
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        try {
+            AdminService.get(parseJwt(localStorage.getItem('Admin'), { decrypt: true }).iss)
+                .then((getcred) => {
                 StudentService.getAll()
                     .then((getData) => {
                         setApiData(getData.data);
@@ -22,6 +31,10 @@ export default function AllStudent() {
             .catch((error) => {
                 history("/")
             })
+        }
+        catch {
+            history("/")
+        }
 
     }, [])
 

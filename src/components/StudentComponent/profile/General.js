@@ -31,22 +31,30 @@ export default function StuGeneral() {
   })
 
   useEffect(() => {
-    LoginService.getStudent()
-      .then((getData) => {
-        setEmail(getData.data.email)
-        StudentService.get(getData.data.email)
-          .then((res) => {
-            setName(res.data.stuName);
-            setEmail(res.data.email);
-            setContact(res.data.contactNo);
-            setCity(res.data.city);
-            setState(res.data.state);
-            setPassword(res.data.password)
-          })
-      })
-      .catch((error) => {
-        history("/")
-      })
+
+    function parseJwt(token) {
+      if (!token) { return; }
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      return JSON.parse(window.atob(base64));
+    }
+    try {
+      StudentService.get(parseJwt(localStorage.getItem('Student'), { decrypt: true }).iss)
+        .then((res) => {
+          setName(res.data.stuName);
+          setEmail(res.data.email);
+          setContact(res.data.contactNo);
+          setCity(res.data.city);
+          setState(res.data.state);
+          setPassword(res.data.password)
+        })
+        .catch((error) => {
+          history("/")
+        })
+    }
+    catch {
+      history("/")
+    }
   })
 
   const sendDataToAPI = () => {

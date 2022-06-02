@@ -6,6 +6,7 @@ import AdminNav from "./AdminNav";
 import AdminHeader from "./AdminHeader";
 import LoginService from '../../services/LoginService';
 import InstituteService from '../../services/InstituteService'
+import AdminService from '../../services/AdminService';
 
 
 export default function AllInstitute() {
@@ -13,8 +14,16 @@ export default function AllInstitute() {
     const [apiData, setApiData] = useState([]);
 
     useEffect(() => {
-        LoginService.getAdmin()
-            .then((getcred) => {
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        try {
+            AdminService.get(parseJwt(localStorage.getItem('Admin'), { decrypt: true }).iss)
+                .then((getcred) => {
                 InstituteService.getAll()
                     .then((getData) => {
                         setApiData(getData.data);
@@ -23,6 +32,10 @@ export default function AllInstitute() {
             .catch((error) => {
                 history("/")
             })
+        }
+        catch {
+            history("/")
+        }
 
     }, [])
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import LoginService from "../../services/LoginService";
 import { useCookies } from 'react-cookie';
+import InstituteService from "../../services/InstituteService";
 
 function InsHeader() {
     const navigate = useNavigate()
@@ -9,10 +10,22 @@ function InsHeader() {
     const [email, setEmail] = useState()
 
     useEffect(() => {
-        LoginService.getInstitute()
-            .then((getData) => {
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        try {
+            InstituteService.get(parseJwt(localStorage.getItem('Institute'), { decrypt: true }).iss)
+                .then((getData) => {
                 setEmail(getData.data.email)
             })
+        }
+        catch {
+            navigate("/")
+        }
     })
 
     const logout = () => {
@@ -24,12 +37,14 @@ function InsHeader() {
             .then((response) => {
                 removeCookie("Institute")
                 localStorage.removeItem("enquiry");
-                localStorage.removeItem("institute");
+                localStorage.removeItem("insEmailId");
+                localStorage.removeItem("Institute");
                 navigate('/')
             })
             .catch((error) => {
                 localStorage.removeItem("enquiry");
-                localStorage.removeItem("institute");
+                localStorage.removeItem("insEmailId");
+                localStorage.removeItem("Institute");
                 removeCookie("Institute")
                 navigate("/")
             })

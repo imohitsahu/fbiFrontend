@@ -7,6 +7,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import LoginService from '../../services/LoginService';
 import EnquiryService from '../../services/EnquiryService';
+import InstituteService from '../../services/InstituteService';
 
 function InsCourses() {
     const history = useNavigate()
@@ -33,15 +34,24 @@ function InsCourses() {
     };
 
     useEffect(() => {
-        LoginService.getInstitute()
-            .then((getData) => {
+
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        try {
+            InstituteService.get(parseJwt(localStorage.getItem('Institute'), { decrypt: true }).iss)
+                .then((getData) => {
                 setEmail(getData.data.email)
-                localStorage.setItem("institute", getData.data.email)
+                localStorage.setItem("insEmailId", getData.data.email)
                 setCourses({
                     ...courses,
                     "insEmail": getData.data.email
                 })
-                EnquiryService.getByInsEmail(localStorage.getItem("institute"))
+                EnquiryService.getByInsEmail(localStorage.getItem("insEmailId"))
                     .then((getenq) => {
                         setEnqData(getenq.data)
                         localStorage.setItem("enquiry", Object.keys(getenq.data).length)
@@ -49,7 +59,7 @@ function InsCourses() {
                     .catch((err) => {
                         localStorage.setItem("enquiry", 0)
                     })
-                CourseService.get(localStorage.getItem("institute"))
+                CourseService.get(localStorage.getItem("insEmailId"))
                     .then((res) => {
                         setApiData(res.data);
                         SetFailure(false)
@@ -64,23 +74,11 @@ function InsCourses() {
             .catch((error) => {
                 history("/")
             })
+        }
+        catch {
+            history("/")
+        }
     }, [changeEffect])
-
-    // useEffect(() => {
-    //     EnquiryService.getByInsEmail(localStorage.getItem("institute"))
-    //         .then((getenq) => {
-    //             setEnqData(getenq.data)
-    //             localStorage.setItem("enquiry", Object.keys(getenq.data).length)
-    //         })
-    //         .catch((err) =>{
-    //             localStorage.setItem("enquiry", 0)
-    //         })
-    //     CourseService.get(localStorage.getItem("institute"))
-    //         .then((res) => {
-    //             setApiData(res.data);
-    //         })
-
-    // }, [changeEffect])
 
     const handleSubmit = async (event) => {
         setCourses({

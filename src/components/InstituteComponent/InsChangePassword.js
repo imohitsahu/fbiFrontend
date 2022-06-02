@@ -41,16 +41,28 @@ export default function InsChangePassword() {
         setShowOldPassword(false)
     };
 
-    useEffect(() => {
-        LoginService.getInstitute()
-            .then((getData) => {
-                setIsProfile(true)
-                setEmail(getData.data.email)
-            })
-            .catch((error) => {
-                history("/")
-            })
 
+    useEffect(() => {
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        try {
+            InstituteService.get(parseJwt(localStorage.getItem('Institute'), { decrypt: true }).iss)
+                .then((getData) => {
+                    setIsProfile(true)
+                    setEmail(getData.data.email)
+                })
+                .catch((error) => {
+                    history("/")
+                })
+        }
+        catch {
+            history("/")
+        }
     }, [])
 
     const handleSubmit = async (e) => {

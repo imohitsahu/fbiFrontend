@@ -18,6 +18,7 @@ function AdminChangePassword() {
     const [failureMsg, setFailureMsg] = useState(null)
     const [loading, setLoading] = useState(false);
     const [isProfile, setIsProfile] = useState(false)
+    const [email, setEmail] = useState()
     const handleClickShowPassword = () => {
         setShowPassword(true)
     };
@@ -32,14 +33,26 @@ function AdminChangePassword() {
     };
 
     useEffect(() => {
-        LoginService.getAdmin()
-            .then((getData) => {
-                setIsProfile(true)
-            })
-            .catch((error) => {
-                history("/")
-            })
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
 
+        try {
+            AdminService.get(parseJwt(localStorage.getItem('Admin'), { decrypt: true }).iss)
+                .then((getData) => {
+                    setEmail(getData.data.email)
+                    setIsProfile(true)
+                })
+                .catch((error) => {
+                    history("/")
+                })
+        }
+        catch {
+            history("/")
+        }
     }, [])
 
     const handleMouseDownOldPassword = (event) => {
@@ -55,7 +68,7 @@ function AdminChangePassword() {
                 setFailureMsg("Please enter different password.")
             } else {
                 setLoading(true)
-                await AdminService.changePassword('shah@gmail.com', oldPassword, confirmPassword)
+                await AdminService.changePassword(email, oldPassword, confirmPassword)
                     .then((response) => {
                         setSuccess(true);
                         setFailure(false)

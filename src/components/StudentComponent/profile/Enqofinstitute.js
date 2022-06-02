@@ -4,6 +4,7 @@ import StuHeader from "../StuHeader";
 import StudentProfile from "../StudentProfile";
 import LoginService from "../../../services/LoginService";
 import EnquiryService from "../../../services/EnquiryService";
+import StudentService from "../../../services/StudentService";
 
 export default function Enqofinstitute() {
     const history = useNavigate()
@@ -14,23 +15,33 @@ export default function Enqofinstitute() {
     const [email, setEmail] = useState()
 
     useEffect(() => {
-        LoginService.getStudent()
-            .then((getData) => {
-                setEmail(getData.data.email)
-                EnquiryService.getByStuEmail(getData.data.email)
-                    .then((getData) => {
-                        setApiData(getData.data);
-                    })
-                    .catch((error) => {
-                        SetFailureMessage("No Enquiries")
-                        SetFailure(true)
-                        SetSuccess(false)
-                    })
-            })
-            .catch((error) => {
-                history("/")
-            })
-
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+        try {
+            StudentService.get(parseJwt(localStorage.getItem('Student'), { decrypt: true }).iss)
+                .then((getData) => {
+                    setEmail(getData.data.email)
+                    EnquiryService.getByStuEmail(getData.data.email)
+                        .then((getData) => {
+                            setApiData(getData.data);
+                        })
+                        .catch((error) => {
+                            SetFailureMessage("No Enquiries")
+                            SetFailure(true)
+                            SetSuccess(false)
+                        })
+                })
+                .catch((error) => {
+                    history("/")
+                })
+        }
+        catch {
+            history("/")
+        }
     }, [])
 
     const getData = () => {

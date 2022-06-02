@@ -13,12 +13,12 @@ export default function InsEnquiry() {
     const [failureMessage, SetFailureMessage] = useState(null)
     const [failure, SetFailure] = useState(false)
     const [success, SetSuccess] = useState(true)
-    const [email, setEmail] = useState(localStorage.getItem("institute"))
+    const [email, setEmail] = useState(localStorage.getItem("insEmailId"))
     const [changeEffect, setChangeEffect] = useState(true)
 
 
     useEffect(() => {
-      //  setEmail()
+        
         EnquiryService.getByInsEmail(email)
             .then((insData) => {
                 setApiData(insData.data);

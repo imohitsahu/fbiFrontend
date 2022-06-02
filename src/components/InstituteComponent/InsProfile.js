@@ -33,23 +33,32 @@ export default function InsProfile() {
     })
 
     useEffect(() => {
-        LoginService.getInstitute()
-            .then((getData) => {
-                setEmail(getData.data.email)
-                InstituteService.get(getData.data.email)
-                    .then((res) => {
-                        setInsName(res.data.insName);
-                        setEmail(res.data.email);
-                        setContact(res.data.contactNo);
-                        setCity(res.data.city);
-                        setState(res.data.state);
-                        setMap(res.data.map);
-                        setPassword(res.data.password)
-                    })
-            })
-            .catch((error) => {
-                history("/")
-            })
+
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        try {
+            InstituteService.get(parseJwt(localStorage.getItem('Institute'), { decrypt: true }).iss)
+                .then((res) => {
+                    setInsName(res.data.insName);
+                    setEmail(res.data.email);
+                    setContact(res.data.contactNo);
+                    setCity(res.data.city);
+                    setState(res.data.state);
+                    setMap(res.data.map);
+                    setPassword(res.data.password)
+                })
+                .catch((error) => {
+                    history("/")
+                })
+        }
+        catch {
+            history("/")
+        }
 
     })
 

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import LoginService from "../../services/LoginService";
+import AdminService from "../../services/AdminService";
 import { useCookies } from 'react-cookie';
 
 function AdminHeader() {
@@ -10,10 +11,23 @@ function AdminHeader() {
     const [email, setEmail] = useState()
 
     useEffect(() => {
-        LoginService.getAdmin()
-            .then((getData) => {
-                setEmail(getData.data.email)
-            })
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+
+        try {
+            AdminService.get(parseJwt(localStorage.getItem('Admin'), { decrypt: true }).iss)
+                .then((getData) => {
+                    setEmail(getData.data.email)
+                })
+        }
+        catch {
+            navigate("/")
+        }
+
     })
 
     const logout = () => {
@@ -25,13 +39,14 @@ function AdminHeader() {
             .then((response) => {
                 removeCookie("Admin")
                 localStorage.removeItem("token");
+                localStorage.removeItem("Admin");
                 navigate('/')
             })
             .catch((error) => {
                 removeCookie("Admin")
+                localStorage.removeItem("Admin");
                 navigate("/")
             })
-
     };
 
 

@@ -40,14 +40,24 @@ function StudentChangePassword() {
     };
 
     useEffect(() => {
-        LoginService.getStudent()
-            .then((getData) => {
-                setEmail(getData.data.email)
-            })
-            .catch((error) => {
-                history("/")
-            })
-
+        function parseJwt(token) {
+            if (!token) { return; }
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        }
+        try {
+            StudentService.get(parseJwt(localStorage.getItem('Student'), { decrypt: true }).iss)
+                .then((getData) => {
+                    setEmail(getData.data.email)
+                })
+                .catch((error) => {
+                    history("/")
+                })
+        }
+        catch {
+            history("/")
+        }
     })
 
     const handleSubmit = async (e) => {

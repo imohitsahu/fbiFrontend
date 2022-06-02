@@ -49,11 +49,13 @@ function StuHeader() {
         LoginService.logout(logoutDTO)
             .then((response) => {
                 // removeCookie("Student")
-                localStorage.removeItem("token");
+                localStorage.removeItem("Student");
                 navigate('/')
             })
             .catch((error) => {
                 // removeCookie("Student")
+                localStorage.removeItem("Student");
+
                 navigate("/")
             })
     };
