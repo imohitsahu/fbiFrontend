@@ -27,19 +27,35 @@ export default function StudentHome() {
   const [success, SetSuccess] = useState(true)
 
   useEffect(() => {
-    LoginService.getStudent()
-      .then((getData) => {
-        setStuEmail(getData.data.email)
-        setStuName(getData.data.stuName);
-        setPhoneNo(getData.data.contactNo);
-        InstituteService.getAll()
-          .then((response) => {
-            setApiData(response.data)
-          })
-      })
-      .catch((error) => {
-        history("/")
-      })
+    function parseJwt(token) {
+      if (!token) { return; }
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace('-', '+').replace('_', '/');
+      return JSON.parse(window.atob(base64));
+    }
+
+    try {
+
+      // LoginService.getStudent()
+      StudentService.get(parseJwt(localStorage.getItem('Student'), { decrypt: true}).iss)
+        .then((getData) => {
+          setStuEmail(getData.data.email)
+          setStuName(getData.data.stuName);
+          setPhoneNo(getData.data.contactNo);
+          InstituteService.getAll()
+            .then((response) => {
+              setApiData(response.data)
+            })
+        })
+        .catch((error) => {
+          history("/")
+        })
+    }
+    catch {
+      history("/")
+
+    }
+
   }, [])
 
   const [courseData, setCourseData] = useState([]);

@@ -43,15 +43,18 @@ function Login() {
             .then(response => {
                 setLoginFailure(false)
                 if (response.data[0] === "Student" && response.data[1] === true) {
-                    setCookie(response.data[0], response.data[2])
+                    // setCookie(response.data[0], response.data[2])
+                    localStorage.setItem(response.data[0],response.data[2],{encrypt:true});
                     history('/student')
                 }
                 else if (response.data[0] === "Institute" && response.data[1] === true) {
-                    setCookie(response.data[0], response.data[2])
+                    // setCookie(response.data[0], response.data[2])
+                    localStorage.setItem(response.data[0],response.data[2],{encrypt:true});
                     history('/institute')
                 }
                 else if (response.data[0] === "Admin" && response.data[1] === true) {
-                    setCookie(response.data[0], response.data[2])
+                    // setCookie(response.data[0], response.data[2])
+                    localStorage.setItem(response.data[0],response.data[2],{encrypt:true});
                     history('/admin')
                 }
             })

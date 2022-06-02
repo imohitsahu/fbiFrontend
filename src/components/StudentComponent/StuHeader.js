@@ -24,12 +24,12 @@ function StuHeader() {
         }
         LoginService.logout(logoutDTO)
             .then((response) => {
-                removeCookie("Student")
+                // removeCookie("Student")
                 localStorage.removeItem("token");
                 navigate('/')
             })
             .catch((error) => {
-                removeCookie("Student")
+                // removeCookie("Student")
                 navigate("/")
             })
     };
