@@ -1,0 +1,17 @@
+.stumn {
+    display: none;
+}
+
+.stumnshow {
+    display: block;
+}
+
+.data.mt-4.rounded.border:hover {
+    box-shadow: 10px 6px 11px grey;
+}
+
+.modal-header button {
+    position: "absolute";
+    height: "15px";
+    width: "5px"
+}

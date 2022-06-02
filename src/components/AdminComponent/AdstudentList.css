@@ -1,0 +1,53 @@
+.allStudentList table th,
+table td {
+  text-align: center;
+}
+
+.allStudentList table tr:nth-child(even) {
+  background-color: #e4e3e3
+}
+
+.allStudentList th {
+  background: #333;
+  color: #fff;
+}
+
+.allStudentList .pagination {
+  margin: 0;
+}
+
+.allStudentList .pagination li:hover {
+  cursor: pointer;
+}
+
+.allStudentList .header_wrap {
+  padding: 30px 0;
+}
+
+.allStudentList .num_rows {
+  width: 20%;
+  float: left;
+}
+
+.allStudentList .tb_search {
+  width: 20%;
+  float: right;
+}
+
+.allStudentList .pagination-container {
+  width: 70%;
+  float: left;
+}
+
+.allStudentList .rows_count {
+  width: 20%;
+  float: right;
+  text-align: right;
+  color: #999;
+}
+
+/* .editPopUp{
+    position: fixed;
+    top: 60px;
+    max
+} */

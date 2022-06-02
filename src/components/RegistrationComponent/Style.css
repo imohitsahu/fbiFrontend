@@ -1,0 +1,53 @@
+.form {
+
+    margin: 40px, 20px;
+    /* max-width: 100%;
+    height: 100vh;
+    background: #bdc3c7;  fallback for old browsers
+    background: -webkit-linear-gradient(to right, #2c3e50, #bdc3c7); Chrome 10-25, Safari 5.1-6 */
+    /* background: linear-gradient(to right, #2c3e50, #bdc3c7); W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+*/
+}
+
+.form-body {
+    background-color: white;
+    border-radius: 5px;
+    /* width: 550px; */
+
+    padding: 20px;
+    text-align: left;
+}
+
+.form__label {
+    max-width: 200px;
+}
+
+.form_input {
+    max-width: 200px;
+}
+
+.footer {
+    text-align: center;
+}
+
+body {
+    background-color: #eee;
+    height: 100vh;
+}
+
+.form-body label {
+    width: 150px;
+}
+
+.form-body .btn {
+    text-align: center;
+    width: 100%;
+    background-color: #15B5B0
+}
+
+.city.d-flex .css-b62m3t-container,
+.state.d-flex .css-b62m3t-container {
+    width: 188px;
+    margin-bottom: 10px;
+}
+
+/* css-b62m3t-container */
