@@ -87,7 +87,7 @@ export default function StudentHome() {
       "phoneNo": phoneNo,
       "enqTime": new Date().toISOString()
     }
-    console.log(enquiryDto)
+    // console.log(enquiryDto)
     EnquiryService.create(enquiryDto)
       .then((getData) => {
         toast.success("Thanks for interest. Institute will contact you soon")
