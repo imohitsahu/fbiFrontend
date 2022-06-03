@@ -52,10 +52,12 @@ export default function Enqofinstitute() {
     }
 
     const onDelete = (enqId) => {
-        EnquiryService.delete(enqId)
-            .then(() => {
-                getData();
-            })
+        if (window.confirm('Are you sure ! You want to delete this account')) {
+            EnquiryService.delete(enqId)
+                .then(() => {
+                    getData();
+                })
+        }
     }
     let index = 0;
 

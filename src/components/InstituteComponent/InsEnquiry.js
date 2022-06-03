@@ -18,7 +18,7 @@ export default function InsEnquiry() {
 
 
     useEffect(() => {
-        
+
         EnquiryService.getByInsEmail(email)
             .then((insData) => {
                 setApiData(insData.data);
@@ -30,8 +30,8 @@ export default function InsEnquiry() {
                 SetFailure(true)
                 SetSuccess(false)
             })
-           
-      
+
+
     }, [changeEffect])
 
 
@@ -50,13 +50,15 @@ export default function InsEnquiry() {
 
     const onDelete = (enqId) => {
         // setChange(1)
-        EnquiryService.delete(enqId)
-            .then(() => {
-              //  localStorage.setItem("enquiry", Object.keys(apiData).length)
-              setChangeEffect(false)
-                getData();
-            })
+        if (window.confirm('Are you sure ! You want to delete this account')) {
+            EnquiryService.delete(enqId)
+                .then(() => {
+                    //  localStorage.setItem("enquiry", Object.keys(apiData).length)
+                    setChangeEffect(false)
+                    getData();
+                })
             setChangeEffect(true)
+        }
     }
     let index = 0;
     let phno;
