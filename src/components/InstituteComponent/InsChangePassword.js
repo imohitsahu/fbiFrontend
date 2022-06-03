@@ -87,7 +87,9 @@ export default function InsChangePassword() {
             }
         }
         else {
+            setSuccess(false)
             alert("New password must match with confirm password")
+            setFailure(true)
         }
     }
 
