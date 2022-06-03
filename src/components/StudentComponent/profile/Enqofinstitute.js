@@ -52,7 +52,7 @@ export default function Enqofinstitute() {
     }
 
     const onDelete = (enqId) => {
-        if (window.confirm('Are you sure ! You want to delete this account')) {
+        if (window.confirm('Are you sure ! You want to remove enquiry')) {
             EnquiryService.delete(enqId)
                 .then(() => {
                     getData();

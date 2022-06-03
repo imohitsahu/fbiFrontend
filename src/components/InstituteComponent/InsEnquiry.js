@@ -50,7 +50,7 @@ export default function InsEnquiry() {
 
     const onDelete = (enqId) => {
         // setChange(1)
-        if (window.confirm('Are you sure ! You want to delete this account')) {
+        if (window.confirm('Are you sure ! You want to remove enquiry')) {
             EnquiryService.delete(enqId)
                 .then(() => {
                     //  localStorage.setItem("enquiry", Object.keys(apiData).length)
